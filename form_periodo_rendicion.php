@@ -161,11 +161,11 @@ if(isset($_POST['submit'])){
 										<tr>
 											<th>Importe Solicitado</th>
 											<td>
-												<input name="importe_solicitado" id="importe_solicitado" type="number" step="0.01" value="<?=$v_imp_solicitado;?>" />
+												<input readonly name="importe_solicitado" id="importe_solicitado" type="number" step="0.01" value="<?=$v_imp_solicitado;?>" />
 											</td>
 											<th>Importe Subsidiado</th>
 											<td>
-												<input name="importe_subsidiado" id="importe_subsidiado" type="number" step="0.01" value="<?=$v_imp_subsidiado;?>" />
+												<input readonly name="importe_subsidiado" id="importe_subsidiado" type="number" step="0.01" value="<?=$v_imp_subsidiado;?>" />
 											</td>
 										</tr>
 										<tr>
@@ -290,7 +290,7 @@ if(isset($_POST['submit'])){
 											$btn_class="btn-danger";
 										}
 									?>
-									<a id="btnEnviar" class="btn <?=$btn_class;?>"  onclick="javascript:return confirm('Confirma ?')">
+									<a id="btnEnviar" class="btn <?=$btn_class;?>"  onclick="javascript:return confirm('¿Confirma?')">
 										<span id="spanEnviar"></span> Grabar 
 									</a>
 								
@@ -308,11 +308,19 @@ if(isset($_POST['submit'])){
 					
 					var total2 = $('#imp_aplicado_sss').val()*1 + $("#imp_propios_otra_cuenta").val()*1 + $("#imp_trasladado").val()*1 + $("#imp_devuelto_cuenta_sss").val()*1 + $("#saldo_no_aplicado").val()*1;
 					console.log(total2);
-					if (total2!= $("#importe_solicitado").val()*1) {						
-						 alert("El importe solicitado " +$('#imp_aplicado_sss').val()*1 + "es diferente a la suma de "+total2 )
-					}else{
-						 alert("El importe solicitado es IGUAL")
+					if (total2!= $("#importe_solicitado").val()*1) {
 						
+						alert("El importe solicitado " +$('#imp_aplicado_sss').val()*1 + "es diferente a la suma de "+total2 )
+						return false;						
+						 
+					}else{
+						
+						 alert("El importe solicitado es IGUAL")
+						 $(this).attr('disabled','disabled');
+							$('#btnEnviar').html('');					
+							$('#btnEnviar').html('<i class="fas fa-sync-alt fa-spin"></i> Procesando');
+							$('input[name=submit]').click();
+							
 					}
 					/*
 					var imp_sss = 0;
@@ -336,10 +344,7 @@ if(isset($_POST['submit'])){
 						alert("El Importe aplicado de SSS debe ser igual a la suma de Importe Transferido, Ret. Ganancias, Ret. IIBB, Otras Retenciones")
 					}
               		*/
-              		$(this).attr('disabled','disabled');
-					$('#btnEnviar').html('');					
-					$('#btnEnviar').html('<i class="fas fa-sync-alt fa-spin"></i> Procesando');
-					$('input[name=submit]').click();
+              		
 					
 				})
 				
