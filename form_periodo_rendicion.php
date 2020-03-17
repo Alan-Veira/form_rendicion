@@ -184,7 +184,7 @@ if(isset($_POST['submit'])){
 											<th>Importe transferido</th>
 											<td>
 												<div class='aplicado'>
-												<input name="importe_transferido" type="number" step="0.01" value="<?=$v_importe_transferido;?>" />
+												<input name="importe_transferido" id="importe_transferido" type="number" step="0.01" value="<?=$v_importe_transferido;?>" />
 												</div>
 											</td>
 										</tr>
@@ -193,14 +193,14 @@ if(isset($_POST['submit'])){
 											<th>Retencion Ganancias</th>
 											<td>
 												<div class='aplicado'>     
-													<input name="ret_ganancias" type="number" step="0.01" value="<?=$v_ret_ganancias;?>" />
+													<input name="ret_ganancias" id="ret_ganancias" type="number" step="0.01" value="<?=$v_ret_ganancias;?>" />
 												</div>
 												
 											</td>
 											<th>Retencion IIBB</th>
 											<td>
 												<div class='aplicado'>
-												<input name="ret_iibb" type="number" step="0.01" value="<?=$v_ret_iibb;?>" />
+												<input name="ret_iibb" id="ret_iibb" type="number" step="0.01" value="<?=$v_ret_iibb;?>" />
 												</div>
 											</td>
 										</tr>
@@ -208,7 +208,7 @@ if(isset($_POST['submit'])){
 											<th>Otras retenciones</th>
 											<td>
 												<div class='aplicado'>
-												<input name="otras_retenciones" type="number" step="0.01" value="<?=$v_otras_retenciones;?>" />
+												<input name="otras_retenciones" id="otras_retenciones" type="number" step="0.01" value="<?=$v_otras_retenciones;?>" />
 												</div>
 											</td>
 											<td></td>
@@ -218,7 +218,7 @@ if(isset($_POST['submit'])){
 											<th>Importe aplicado SSS</th>
 											<td>
 												<div class='imp_sss'>
-													<input name="imp_aplicado_sss" type="number" step="0.01" value="<?=$v_imp_aplicado_sss;?>" />
+													<input name="imp_aplicado_sss" id="imp_aplicado_sss" type="number" step="0.01" value="<?=$v_imp_aplicado_sss;?>" />
 												</div>								
 											</td>
 											<th>Importe propio OS</th>
@@ -291,7 +291,7 @@ if(isset($_POST['submit'])){
 			$(function(){
 				
 				$('#btnEnviar').on('click',function(){
-					
+					/*
 					var imp_sss = 0;
 					$(".imp_sss input").each(function(){
 						imp_sss += parseFloat($(this).val());
@@ -312,10 +312,27 @@ if(isset($_POST['submit'])){
 					}else{
 						alert("El Importe aplicado de SSS debe ser igual a la suma de Importe Transferido, Ret. Ganancias, Ret. IIBB, Otras Retenciones")
 					}
-              		
-              		
+              		*/
+              		$(this).attr('disabled','disabled');
+					$('#btnEnviar').html('');					
+					$('#btnEnviar').html('<i class="fas fa-sync-alt fa-spin"></i> Procesando');
+					$('input[name=submit]').click();
 					
 				})
+				
+				$('#imp_aplicado_sss').on('blur',function(){
+
+				var total = $('#importe_transferido').val()*1 + $('#ret_ganancias').val()*1 + $('#ret_iibb').val()*1 + $('#otras_retenciones').val()*1 ;				
+				console.log(total);				
+				if(total!=$('#imp_aplicado_sss').val()*1){				
+				console.log("es diferente total:"+total+" imp_aplicado_sss "+$('#imp_aplicado_sss').val()*1)
+				}
+				else{				
+				console.log("es IGUAL")
+				}				
+				})  
+				
+				
 				
 				
 				
