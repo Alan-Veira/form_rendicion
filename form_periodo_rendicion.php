@@ -93,9 +93,10 @@ if(isset($_POST['submit'])){
 																		
 									<?
 									
-										$query = "SELECT *
-													FROM prepaga.`sd_rendicion_devolucion`
-													WHERE clave_rendicion=$clave_rendicion";
+										$query = "SELECT ren.*, dre.`imp_solicitado`,dre.`imp_subsidiado`
+													FROM prepaga.`sd_rendicion_devolucion` ren
+													JOIN sd_dr_envio dre ON ren.`clave_rendicion`= dre.`clave_rendicion`
+													WHERE ren.clave_rendicion=$clave_rendicion";
 										//echo "$query";
 										$result = mysql_query($query) or die(mysql_error().$query);
 										
@@ -105,6 +106,8 @@ if(isset($_POST['submit'])){
 											
 											$accion = "insertar";
 											
+											$v_imp_subsidiado=0;
+											$v_imp_solicitado=0;
 											$v_ord_pago_1=0 ;
 											$v_ord_pago_2=0 ;
 											$v_fec_trans_1="";
@@ -146,7 +149,8 @@ if(isset($_POST['submit'])){
 											$v_imp_devuelto_cuenta_sss = $d->imp_devuelto_cuenta_sss ; 
 											$v_saldo_no_aplicado = $d->saldo_no_aplicado ; 
 											$v_observaciones = $d->observaciones ;
-											
+											$v_imp_solicitado = $d->imp_solicitado;
+											$v_imp_subsidiado = $d->imp_subsidiado;
 										}
 									?>									
 									<!-- -->
@@ -154,6 +158,16 @@ if(isset($_POST['submit'])){
 									<input type="hidden" name="accion" value="<?=$accion;?>" />
 									<!-- -->
 									<table class="table" style="max-width: 1100px;">
+										<tr>
+											<th>Importe Solicitado</th>
+											<td>
+												<input name="importe_solicitado" id="importe_solicitado" type="number" step="0.01" value="<?=$v_imp_solicitado;?>" />
+											</td>
+											<th>Importe Subsidiado</th>
+											<td>
+												<input name="importe_subsidiado" id="importe_subsidiado" type="number" step="0.01" value="<?=$v_imp_subsidiado;?>" />
+											</td>
+										</tr>
 										<tr>
 											<th>Orden de pago 1</th>
 											<td>
@@ -229,7 +243,7 @@ if(isset($_POST['submit'])){
 										<tr>
 											<th>Importe propio otra cuenta </th>
 											<td>
-												<input name="imp_propios_otra_cuenta" type="number" step="0.01" value="<?=$v_imp_propios_otra_cuenta;?>" />
+												<input name="imp_propios_otra_cuenta" id="imp_propios_otra_cuenta" type="number" step="0.01" value="<?=$v_imp_propios_otra_cuenta;?>" />
 											</td>
 											<td></td>
 											<td></td>
@@ -243,17 +257,17 @@ if(isset($_POST['submit'])){
 										<tr>
 											<th>Importe trasladado</th>
 											<td>
-												<input name="imp_trasladado" type="number" step="0.01" value="<?=$v_imp_trasladado;?>" />
+												<input name="imp_trasladado" type="number" id="imp_trasladado" step="0.01" value="<?=$v_imp_trasladado;?>" />
 											</td>
 											<th>Importe devuelto cuenta SSS</th>
 											<td>
-												<input name="imp_devuelto_cuenta_sss" type="number" step="0.01" value="<?=$v_imp_devuelto_cuenta_sss;?>" />
+												<input name="imp_devuelto_cuenta_sss" type="number" id="imp_devuelto_cuenta_sss" step="0.01" value="<?=$v_imp_devuelto_cuenta_sss;?>" />
 											</td>
 										</tr>
 										<tr>
 											<th>Saldo no aplicado</th>
 											<td>
-												<input name="saldo_no_aplicado" type="number" step="0.01" value="<?=$v_saldo_no_aplicado;?>" />
+												<input name="saldo_no_aplicado" type="number" id="saldo_no_aplicado" step="0.01" value="<?=$v_saldo_no_aplicado;?>" />
 											</td>
 											<td></td>
 											<td></td>
@@ -291,6 +305,15 @@ if(isset($_POST['submit'])){
 			$(function(){
 				
 				$('#btnEnviar').on('click',function(){
+					
+					var total2 = $('#imp_aplicado_sss').val()*1 + $("#imp_propios_otra_cuenta").val()*1 + $("#imp_trasladado").val()*1 + $("#imp_devuelto_cuenta_sss").val()*1 + $("#saldo_no_aplicado").val()*1;
+					console.log(total2);
+					if (total2!= $("#importe_solicitado").val()*1) {						
+						 alert("El importe solicitado " +$('#imp_aplicado_sss').val()*1 + "es diferente a la suma de "+total2 )
+					}else{
+						 alert("El importe solicitado es IGUAL")
+						
+					}
 					/*
 					var imp_sss = 0;
 					$(".imp_sss input").each(function(){
